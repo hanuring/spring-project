@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.project.model.OtDAO">
+
+   <select id="otCont" resultType="com.project.model.OtDTO" parameterType="int">
+      select * from sp_ot_video where lec_no_fk = #{no}
+   </select>
+   
+   <insert id="otVideo" parameterType="com.project.model.OtDTO">
+        insert into sp_ot_video values(sp_ot_seq.nextval, #{lec_no_fk}, #{ot_src}, #{ot_title}, #{ot_summary}, #{ot_notice})
+    </insert>
+    
+    <update id="ckOtData" parameterType="int">
+       update sp_ot_video set lec_no_fk = #{lec_no} where lec_no_fk = #{lec_no}
+    </update>
+    
+    <select id="otContByLecNo" resultType="com.project.model.OtDTO" parameterType="int">
+      select * from sp_ot_video where lec_no_fk = #{no}
+   </select>
+    
+    <update id="OtUpdate" parameterType="com.project.model.OtDTO">
+       update sp_ot_video set ot_title = #{ot_title}, ot_summary = #{ot_summary}, ot_notice = #{ot_notice}, ot_src = #{ot_src} where lec_no_fk = #{lec_no_fk}
+    </update>
+    
+    <delete id="OtDelete" parameterType="int">
+       delete from sp_ot_video where lec_no_fk = #{lec_no}
+    </delete>
+    
+</mapper>

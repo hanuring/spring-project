@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.project.model.RegistDAO">
+	
+	<insert id="regist" parameterType="com.project.model.RegistDTO">
+		<![CDATA[
+			insert into sp_regist values(sp_regist_seq.nextval, #{mem_no_fk}, #{lec_no_fk})
+		]]>
+	</insert>
+	
+	<select id="check" parameterType="com.project.model.RegistDTO" resultType="Integer">
+		<![CDATA[
+			select count(*) from sp_regist where mem_no_fk = #{mem_no_fk} and lec_no_fk = #{lec_no_fk}
+		]]>
+	</select>
+	
+	<select id="checkWish" parameterType="com.project.model.RegistDTO" resultType="Integer">
+		<![CDATA[
+			select lec_no_fk from sp_preference where mem_no_fk = #{mem_no_fk} order by pref_no desc
+		]]>
+	</select>
+	
+	<select id="checkReg" parameterType="com.project.model.RegistDTO" resultType="Integer">
+		<![CDATA[
+			select lec_no_fk from sp_regist where mem_no_fk = #{mem_no_fk} order by reg_no desc
+		]]>
+	</select>
+	
+	<!-- 210214 이호철 추가 -->
+	<select id="checkReg2" parameterType="java.util.HashMap" resultType="com.project.model.RegistDTO"> 
+		<![CDATA[
+		select * from sp_regist where mem_no_fk = #{mem_no_fk} and lec_no_fk = #{lec_no_fk}
+		]]>
+	</select>
+	<!-- 210217 이호철 수정 -->
+	<delete id="delete_class" parameterType="int">
+		delete from sp_regist where mem_no_fk = #{mem_no_fk}
+	</delete>
+	
+</mapper>

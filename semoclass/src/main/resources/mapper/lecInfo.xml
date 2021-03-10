@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.model.LecInfoDAO">
+
+	<select id="allList" resultType="com.project.model.LectureDTO">
+		select * from sp_lecture_info order by lec_no desc
+	</select>
+	
+	<select id="contList" parameterType="int" resultType="com.project.model.LectureDTO">
+		select * from sp_lecture_info where lec_no = #{lec_no} order by lec_no desc
+	</select>
+	
+	<insert id="add" parameterType="com.project.model.LectureDTO">
+	insert into sp_lecture_info values(sp_lec_info_seq.nextval, #{cate_fk}, #{lec_level}, #{lec_thumbnail}, #{lec_name}, #{lec_amount}, #{lec_possible},
+										#{lec_tool}, #{lec_explain}, sysdate, #{lec_price}, default, #{lec_startdate}, #{lec_enddate}, #{lec_refund}, 
+										#{lec_member}, #{mem_no_fk})
+	</insert>
+	
+	<select id="cateList" resultType="com.project.model.CategoryDTO">
+		select * from sp_category where cate_code like '%00' order by cate_code
+	</select>
+	
+	<select id="subCateList" parameterType="int" resultType="com.project.model.CategoryDTO">
+		select * from sp_category where cate_code_ref = #{code} order by cate_code
+	</select>
+	
+	<select id="infoCate" resultType="com.project.model.CategoryDTO">
+		select * from sp_lecture_info info join sp_category cate on info.cate_fk = cate.cate_code order by lec_no desc
+	</select>
+
+<!-- 임하늘님 추가  -->
+	<delete id="del" parameterType="int">
+		delete from sp_lecture_info where lec_no = #{no}
+	</delete>
+	
+	<select id="modifyCont" resultType="com.project.model.CategoryDTO">
+		select * from sp_lecture_info info 
+		inner join sp_category cate on cate.cate_code = info.cate_fk
+		inner join sp_member mem on mem.member_id = info.lec_member
+		where lec_no = #{no}
+	</select>
+	
+	<update id="update" parameterType="com.project.model.LectureDTO">
+		update sp_lecture_info set cate_fk = #{cate_fk}, lec_amount = #{lec_amount}, lec_possible = #{lec_possible}, lec_thumbnail = #{lec_thumbnail},
+									lec_name = #{lec_name}, lec_explain = #{lec_explain}, lec_refund = #{lec_refund}, lec_level = #{lec_level},
+									lec_tool = #{lec_tool}, lec_price = #{lec_price}, lec_startdate = #{lec_startdate}, lec_enddate = #{lec_enddate}
+									where lec_no = #{lec_no}
+	</update>
+	
+	<select id="memberInfo" parameterType="string" resultType="com.project.model.CategoryDTO">
+		select * from sp_lecture_info info join sp_category cate on info.cate_fk = cate.cate_code where lec_member = #{member} order by lec_no desc
+	</select>
+	<!-- /추가 -->
+
+<!-- 이호철 -->
+<!-- lecture 관련 sql문 -->
+<select id="L_Cate_Lec" parameterType="int" resultType="com.project.model.LectureDTO">
+select * from sp_lecture_info l 
+join sp_category c on l.cate_fk = c.cate_code 
+where c.cate_code_ref = #{cate_code}
+</select>
+<select id="M_Cate_Lec" parameterType="int" resultType="com.project.model.LectureDTO">
+	select * from sp_lecture_info where cate_fk = #{cate_code} order by lec_no desc
+</select>
+<select id="Distinct_cate" parameterType="int" resultType="int">
+	select distinct l.cate_fk from sp_lecture_info l 
+	join sp_category c on l.cate_fk = c.cate_code 
+	where c.cate_code_ref = #{cate_code}
+</select>
+<!-- Sorting -->
+<select id="Hit_sort" parameterType="int" resultType="com.project.model.LectureDTO">
+	select * from sp_lecture_info 
+	where cate_fk = #{cate_code}
+	order by lec_hit desc
+</select>
+<select id="Recent_sort" parameterType="int" resultType="com.project.model.LectureDTO">
+	select * from sp_lecture_info 
+	where cate_fk = #{cate_code}
+	order by lec_no desc
+</select>
+<select id="Satisfy_sort" parameterType="int" resultType="com.project.model.LectureDTO">
+	select * from(
+	select lec_no, cate_fk, lec_thumbnail, lec_name, lec_possible, lec_price, lec_startdate, lec_enddate, lec_member, lec_hit, count(decode(pref_like, 1, 1)) as all_pref_like , count(decode(pref_dislike, 1, 1)) as all_pref_dislike 
+	from sp_lecture_info l left join sp_preference p 
+	on l.lec_no = p.lec_no_fk 
+	group by lec_no, cate_fk, lec_thumbnail, lec_name, lec_possible, lec_price, lec_startdate, lec_enddate, lec_member, lec_hit
+	order by all_pref_like  desc, lec_no desc )
+	where cate_fk = #{cate_code}
+</select>
+
+
+<!-- 210129 추가 이호철 -->
+<!-- 조회수 증가 메서드 -->
+<update id="InfoHit" parameterType="int">
+	update sp_lecture_info set lec_hit = lec_hit +1 where lec_no = #{lec_no}
+</update>
+
+
+
+<!-- 검색관련 Lecture list -->
+<select id="lec_name" parameterType="String" resultType="com.project.model.LectureDTO">
+	select * from sp_lecture_info where lec_name like '%'||#{serach_keyword}||'%' order by lec_no desc
+</select>
+<select id="lec_teacher" parameterType="String" resultType="com.project.model.LectureDTO">
+select lec_no, cate_fk, lec_level, lec_thumbnail, lec_name, lec_amount, lec_possible,
+lec_tool, lec_explain, lec_date, lec_price, lec_hit, lec_startdate, lec_enddate, lec_refund, l.lec_member, mem_no_fk
+from sp_lecture_info l  join sp_member m on l.lec_member = m.member_id 
+where m.member_name like '%'||#{serach_keyword}||'%' order by lec_no desc
+</select>
+<select id="category" parameterType="String" resultType="com.project.model.LectureDTO">
+	select * from sp_lecture_info l 
+	join sp_category c on l.cate_fk = c.cate_code
+	where c.cate_name like '%'||#{search_keyword}||'%' order by lec_no desc
+</select>
+<select id="lec_name_search" resultType="String">
+	select distinct lec_name from sp_lecture_info 
+</select>
+<select id="lec_teacher_search" resultType="String">
+	select distinct m.member_name from sp_member m
+	join sp_lecture_info l on m.member_id = l.lec_member
+</select>
+<select id="category_search" resultType="String">
+	select cate_name from sp_category
+</select>
+
+
+
+<!-- 인기검색어 관련 -->
+<!-- <select id="Hot_Search_List" resultType="com.project.model.SearchDTO">
+	select * from sp_hot_search
+</select>
+
+<insert id="insert_search_hit" parameterType="String">
+	insert into sp_hot_search values(#{hot_search_field}, #{hot_search_keyword}, default)
+</insert>
+<update id="search_hit" parameterType="String">
+	update sp_hot_search set hot_search_hit = hot_search_hit +1 where hot_search_keyword = #{hot_search_keyword}
+</update> -->
+
+
+
+<!-- category 관련 sql문 -->
+<select id="C_total" resultType="com.project.model.CategoryDTO">
+	select * from sp_category order by cate_code
+</select>
+
+<select id="C_Large" resultType="com.project.model.CategoryDTO">
+	select * from sp_category where cate_code like '%'|| 00
+</select>
+
+<select id="C_Mid" resultType="com.project.model.CategoryDTO">
+	select * from sp_category where cate_code not like '%'|| 00
+</select>
+
+<select id="Detail_cate" parameterType="int" resultType="com.project.model.CategoryDTO">
+	select * from sp_category where cate_code = #{cate_code}
+</select>
+
+
+
+<!-- 210128 혁님 추가분 -->
+<select id="latestInfo" resultType="com.project.model.LectureDTO">
+<![CDATA[
+    SELECT * FROM sp_lecture_info WHERE lec_no = (SELECT max(lec_no) FROM sp_lecture_info)
+    ]]>
+</select>
+
+
+<!-- 210208 이호철 추가 -->
+<select id="ealryBird" parameterType="int" resultType="com.project.model.LectureDTO">
+	select * from sp_lecture_info l 
+	join sp_category c on l.cate_fk = c.cate_code 
+	where c.cate_code_ref = #{cate_code} and l.lec_startdate > to_char(sysdate -7, 'yyyy/mm/dd')
+</select>
+
+<select id="openPlan" parameterType="int" resultType="com.project.model.LectureDTO">
+	select * from sp_lecture_info l 
+	join sp_category c on l.cate_fk = c.cate_code 
+	where c.cate_code_ref = #{cate_code} and l.lec_startdate > to_char(sysdate, 'yyyy/mm/dd')
+</select>
+
+<select id="immeRegi" parameterType="int" resultType="com.project.model.LectureDTO">
+	select * from sp_lecture_info l 
+	join sp_category c on l.cate_fk = c.cate_code
+	where  c.cate_code_ref = 100 and  to_char(sysdate, 'yyyy/mm/dd') between l.lec_startdate and l.lec_enddate
+</select>
+
+
+<!-- 210216 이호철 추가 -->
+<select id="getListWhereMemberno" parameterType="int" resultType="com.project.model.LectureDTO">
+	select * from sp_lecture_info where mem_no_fk = #{mem_no_fk}
+
+</select>
+
+
+</mapper>
+
+
+
+

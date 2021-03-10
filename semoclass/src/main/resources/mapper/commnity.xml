@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.project.model.ComunityDAO">
+	<!-- comunity -->
+	<select id="comuList" resultType="com.project.model.ComunityVO" parameterType="int">
+		select c.*, m.member_name from sp_comunity c join sp_member m on c.lec_no_fk = #{lec_no} and c.mem_no_fk = m.member_no order by c.comu_no desc
+	</select>
+	<insert id="comuWrite" parameterType="com.project.model.ComunityDTO">
+		insert into sp_comunity values(sp_comu_seq.nextval,#{comu_cont},#{mem_no_fk},#{lec_no_fk},sysdate)
+	</insert>
+	<select id="comuCount" parameterType="int" resultType="int">
+		select nvl(count(*),0) from sp_comunity where lec_no_fk = #{lec_no}
+	</select>
+	
+	<!-- reply -->
+	<select id="replyList" resultType="com.project.model.ReplyVO" parameterType="java.util.HashMap">
+		select r.*,m.member_state from sp_reply r join sp_member m on r.mem_no_fk = m.member_no where lec_no_fk = #{lec_no} and reply_step in (0,-1) order by reply_no desc
+	</select>
+	
+	<insert id="replyWrite" parameterType="com.project.model.ReplyDTO">
+		insert into sp_reply values(sp_reply_seq.nextval,#{reply_cont},#{lec_no_fk},#{mem_no_fk},sysdate,sp_reply_seq.currval,default,#{mem_name})
+	</insert>
+	<update id="replyDelete" parameterType="int">
+		update sp_reply set reply_cont = '(삭제된 댓글입니다.)', reply_step = -1 where reply_no = #{reply_no}
+	</update>
+	
+	<update id="replyEdit" parameterType="com.project.model.ReplyDTO">
+		update sp_reply set reply_cont = #{reply_cont} where reply_no = #{reply_no}
+	</update>
+	
+	<!-- reReply -->
+	<insert id="reReplyWrite" parameterType="com.project.model.ReplyDTO">
+		insert into sp_reply values(sp_reply_seq.nextval,#{reply_cont},#{lec_no_fk},#{mem_no_fk},sysdate,#{reply_no},1,#{mem_name})
+	</insert>
+	
+	<select id="reReplyList" parameterType="java.util.HashMap" resultType="com.project.model.ReplyVO">
+		select r.*, m.member_state from sp_reply r join sp_member m on r.mem_no_fk = m.member_no where reply_group = #{rep_no} and reply_step in(1,-1) and lec_no_fk = #{lec_no} order by reply_no desc
+	</select>
+	
+	<select id="reReplyCheck" parameterType="java.util.HashMap">
+		select Count(*) from sp_reply where reply_no = #{rep_no} and reply_step in(1,-1) and lec_no_fk = #{lec_no}
+	</select>
+</mapper>

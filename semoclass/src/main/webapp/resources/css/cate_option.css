@@ -1,0 +1,65 @@
+#select_option {
+	margin-left: 7%;	
+	margin-top : 2%;	
+}
+
+#large_cate , #small_cate, #sort_list {
+	padding : 8px 12px;	
+	color: #333;
+	background-color: #eee;
+	border : 1px solid #ddd;
+	cursor: pointer;
+	border-radius: 5px;
+	width: 150px;
+	margin: 10px;
+	font-family: 'Noto Sans KR', sans-serif; 
+	font-weight: bold;
+	/* replace default styling (arrow) */
+/* 	appearance:none; */
+/* 	-webkit-appearance:none;  ==> erase the arrow if I have proper image for arrow use url('data:.....')*/ 
+}
+
+#large_cate{
+	background-color: rgb(173,45,255);
+	color: white;
+}
+#small_cate{
+	background-color: rgb(108,123,255);
+	color: white;
+}
+#sort_list{
+	background-color: rgb(42,203,255);
+	color: white;
+}
+
+
+#small_cate > option {
+	background-color: rgb(108,123,255);
+	font-family: 'Noto Sans KR', sans-serif; 
+	font-weight: bold;
+}
+#sort_list > option {
+	background-color: rgb(42,203,255);
+	font-family: 'Noto Sans KR', sans-serif; 
+	font-weight: bold;	
+}
+
+
+#large_cate:focus, #large_cate:hover{
+	outline:none;
+	border : 2px solid #3d4ea2;
+}
+#small_cate:focus, #small_cate:hover{
+	outline:none;
+	border : 2px solid #3d4ea2;
+}
+#sort_list:focus, #sort_list:hover{
+	outline:none;
+	border : 2px solid #3d4ea2;
+}
+
+#large_cate option, #small_cate option, #sort_list option{
+	background: #fff;
+	margin-top: 2px;
+}
+

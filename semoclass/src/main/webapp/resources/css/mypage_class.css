@@ -1,0 +1,99 @@
+@charset "UTF-8";
+	
+.btn_blue  {
+	background-color: #3A4CA8;
+	width: 100px;
+	height: 40px;
+	color: #fff;
+	letter-spacing: 0.1em;
+	font-size: 14px;
+	font-weight: bold;
+	border: none;
+	margin-bottom: 3px;
+	border-radius: 4px;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.btn_blue:hover {
+  color: #fff;
+  background-color: #5C71DC;
+  border-color: #5C71DC;
+}
+
+
+
+body { 
+	color: #686868;
+	font-size: 16px; 
+	}
+h3 { letter-spacing: 0.2em; font-size: 34px; }
+.p { letter-spacing: 0.2em; font-size: 15px; color: #9B9B9B; } 
+
+table select { 
+	width: 700px;
+	height: 40px;
+	outline: none;
+	border-color: #9B9B9B;
+	padding-left: 10px;
+	}
+
+table select:hover {
+	border: 2px solid #3A4CA8;
+}
+	
+.option {
+	color: red;
+}
+	
+table input {
+	width: 700px;
+	height: 40px;
+	border: 1px solid #9B9B9B;
+	padding-left: 10px;
+	outline: none;
+}
+
+table label {
+	width: 700px;
+	height: 40px;
+	border: 1px solid #9B9B9B;
+	outline: none;
+	font-weight: normal;
+}
+
+table input:hover {
+	border: 2px solid #3A4CA8;
+}
+
+table label:hover {
+	border: 2px solid #3A4CA8;
+}
+
+table td {
+	padding: 20px 10px 10px 20px;
+}
+
+input::placeholder {
+	color: gray;
+	font-weight: normal;	
+}
+
+table th {
+	text-align: center;
+	padding: 15px 0px 0px 15px;
+	color: #686868;
+	letter-spacing: 0.1em;
+	font-weight: normal;
+}
+
+.ck.ck-editor {
+	max-width: 700px;
+}
+
+.ck-editor__editable{
+	min-height: 300px;
+	min-width: 600px;
+}
+
+
+#image_container img { width: 300px; }

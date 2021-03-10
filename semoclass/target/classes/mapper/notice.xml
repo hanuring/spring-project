@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.project.model.AdminDAO">
+	
+	<select id="noticeList" resultType="com.project.model.NoticeVO" parameterType="java.util.HashMap">
+		<![CDATA[select * from (select n.*,row_number() over(order by notice_no desc) rnum from sp_notice n) 
+		join sp_member m 
+		on mem_no_fk = m.member_no 
+        where rnum >= #{startNo} and rnum <= #{endNo} 
+		order by notice_no desc]]>
+	</select>
+	
+	<select id="noticeCont" parameterType="int" resultType="com.project.model.NoticeVO">
+		select n.*, m.member_name from sp_notice n join sp_member m on n.mem_no_fk = m.member_no 
+		where notice_no = #{no}
+	</select>
+	<update id="hitIncrease" parameterType="int">
+		update sp_notice set notice_hit = notice_hit+1 where notice_no = #{no}
+	</update>
+	
+	<select id="noticeCount" resultType="int">
+		select count(*) from sp_notice
+	</select>
+	
+	<update id="addHit" parameterType="int">
+		update sp_notice set notice_hit = notice_hit+1 where notice_no = #{no}
+	</update>
+	
+	<insert id="noticeWrite" parameterType="com.project.model.NoticeDTO">
+		<choose>
+		<when test="notice_file != null">
+			insert into sp_notice values(sp_notice_seq.nextval,#{notice_title},#{notice_cont},default,#{mem_no_fk},sysdate,#{notice_file})
+		</when>
+		<when test="notice_file == null">
+			insert into sp_notice values(sp_notice_seq.nextval,#{notice_title},#{notice_cont},default,#{mem_no_fk},sysdate,null)
+		</when>
+		</choose>
+	</insert>
+	
+	<update id="noticeUpdate" parameterType="com.project.model.NoticeDTO">
+		<choose>
+		<when test="notice_file != null">
+			update sp_notice set notice_title = #{notice_title}, notice_cont = #{notice_cont}, notice_file = #{notice_file} where notice_no = #{notice_no}
+		</when>
+		<when test="notice_file == null">
+			update sp_notice set notice_title = #{notice_title}, notice_cont = #{notice_cont} where notice_no = #{notice_no}
+		</when>
+		</choose>
+	</update>
+	
+	<delete id="noticeDelete" parameterType="int">
+		delete from sp_notice where notice_no = #{no}
+	</delete>
+	
+</mapper>

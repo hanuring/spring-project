@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.project.model.HotDAO">
+	
+	<select id="hotList" resultType="com.project.model.HotDTO">
+		<![CDATA[
+			select *
+			from
+			(
+			select lec_no, cate_fk, lec_thumbnail, lec_name, lec_possible, lec_date, lec_price, lec_startdate, lec_enddate, lec_member, count(decode(pref_like, 1, 1)) as all_pref_like , count(decode(pref_dislike, 1, 1)) as all_pref_dislike 
+			from sp_lecture_info l left join sp_preference p 
+			on l.lec_no = p.lec_no_fk 
+			group by lec_no, cate_fk, lec_thumbnail, lec_name, lec_possible, lec_date, lec_price, lec_startdate, lec_enddate, lec_member 
+			order by count(decode(pref_like, 1, 1))  desc
+			)
+		]]>
+	</select>
+	
+	<select id="recentList" resultType="com.project.model.HotDTO">
+		<![CDATA[
+			select *
+			from
+			(
+			select lec_no, cate_fk, lec_thumbnail, lec_name, lec_possible, lec_date, lec_price, lec_startdate, lec_enddate, lec_member, count(decode(pref_like, 1, 1)) as all_pref_like , count(decode(pref_dislike, 1, 1)) as all_pref_dislike 
+			from sp_lecture_info l left join sp_preference p 
+			on l.lec_no = p.lec_no_fk 
+			group by lec_no, cate_fk, lec_thumbnail, lec_name, lec_possible, lec_date, lec_price, lec_startdate, lec_enddate, lec_member 
+			order by count(decode(pref_like, 1, 1))  desc
+			)
+		]]>
+	</select>
+	
+	<select id="oneList" parameterType="int" resultType="com.project.model.HotDTO">
+		<![CDATA[
+			select *
+			from
+			(
+			select lec_no, cate_fk, lec_thumbnail, lec_name, lec_possible, lec_date, lec_price, lec_startdate, lec_enddate, lec_member, count(decode(pref_like, 1, 1)) as all_pref_like , count(decode(pref_dislike, 1, 1)) as all_pref_dislike 
+			from sp_lecture_info l left join sp_preference p 
+			on l.lec_no = p.lec_no_fk 
+			group by lec_no, cate_fk, lec_thumbnail, lec_name, lec_possible, lec_date, lec_price, lec_startdate, lec_enddate, lec_member 
+			order by count(decode(pref_like, 1, 1))  desc
+			)
+			where lec_no = #{lec_no}
+		]]>
+	</select>
+	
+	<select id="openList" resultType="com.project.model.HotDTO">
+		<![CDATA[
+			select *
+			from
+			(
+			select lec_no, cate_fk, lec_thumbnail, lec_name, lec_possible, lec_date, lec_price, lec_startdate, lec_enddate, lec_member, count(decode(pref_like, 1, 1)) as all_pref_like , count(decode(pref_dislike, 1, 1)) as all_pref_dislike 
+			from sp_lecture_info l left join sp_preference p 
+			on l.lec_no = p.lec_no_fk 
+			group by lec_no, cate_fk, lec_thumbnail, lec_name, lec_possible, lec_date, lec_price, lec_startdate, lec_enddate, lec_member 
+			order by lec_startdate
+			)
+		]]>
+	</select>
+	
+	<select id="newList" resultType="com.project.model.HotDTO">
+		<![CDATA[
+			select *
+			from
+			(
+			select lec_no, cate_fk, lec_thumbnail, lec_name, lec_possible, lec_date, lec_price, lec_startdate, lec_enddate, lec_member, count(decode(pref_like, 1, 1)) as all_pref_like , count(decode(pref_dislike, 1, 1)) as all_pref_dislike 
+			from sp_lecture_info l left join sp_preference p 
+			on l.lec_no = p.lec_no_fk 
+			group by lec_no, cate_fk, lec_thumbnail, lec_name, lec_possible, lec_date, lec_price, lec_startdate, lec_enddate, lec_member 
+			order by lec_date desc
+			)
+		]]>
+	</select>
+	
+		<select id="AllLikeList" resultType="com.project.model.HotDTO">
+			select *
+			from
+			(
+			select lec_no, cate_fk, lec_thumbnail, lec_name, lec_possible, lec_date, lec_price, lec_startdate, lec_member, count(decode(pref_like, 1, 1)) as all_pref_like , count(decode(pref_dislike, 1, 1)) as all_pref_dislike 
+			from sp_lecture_info l left join sp_preference p 
+			on l.lec_no = p.lec_no_fk
+			group by lec_no, cate_fk, lec_thumbnail, lec_name, lec_possible, lec_date,  lec_price, lec_startdate, lec_member 
+			order by count(decode(pref_like, 1, 1))  desc )
+	</select>
+	
+	
+</mapper>

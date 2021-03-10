@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.model.PreferenceDAO">
+
+	<insert id="insertLecLike" parameterType="java.util.HashMap">
+		insert into sp_preference values(sp_pref_seq.nextval,#{mem_no},#{lec_no},1,0)
+	</insert>
+	<update id="updateLecLike" parameterType="java.util.HashMap">
+		update sp_preference set pref_like = 1,pref_dislike = 0 where mem_no_fk = #{mem_no} and lec_no_fk = #{lec_no}
+	</update>
+	<delete id="deleteLike" parameterType="int">
+		delete from sp_preference where pref_no = #{pref_no}
+	</delete>
+	<!-- 0203 박지원 추가 - 멤버가 좋아요 누른 강의 가져오기 -->
+	<select id="selectLecLikeList" parameterType="int" resultType="com.project.model.HotDTO">
+		select lec_no,cate_fk,lec_thumbnail,lec_name,lec_possible,lec_price,lec_startdate,lec_member,
+		count(decode(p.pref_like, 1, 1)) as all_pref_like, count(decode(p.pref_dislike, 1, 1)) as all_pref_dislike 
+		from sp_lecture_info i, sp_preference p 
+		where i.lec_no in (select lec_no_fk from sp_preference where mem_no_fk = #{mem_no} and pref_like = 1) 
+		group by lec_no,cate_fk,lec_thumbnail,lec_name,lec_possible,lec_price,lec_startdate,lec_member 
+	</select>
+	
+	<insert id="insertLecDislike" parameterType="java.util.HashMap">
+		insert into sp_preference values(sp_pref_seq.nextval,#{mem_no},#{lec_no},0,1)
+	</insert>
+	<update id="updateLecDislike" parameterType="java.util.HashMap">
+		update sp_preference set pref_like = 0,pref_dislike = 1 where mem_no_fk = #{mem_no} and lec_no_fk = #{lec_no}
+	</update>
+	<delete id="deleteDislike" parameterType="int">
+		delete from sp_preference where pref_no = #{pref_no}
+	</delete>
+	
+	<select id="prefCheck" parameterType="java.util.HashMap" resultType="int">
+		select Count(*) from sp_preference where mem_no_fk = #{mem_no} and lec_no_fk = #{lec_no}
+	</select>
+	<select id="prefDTO" parameterType="java.util.HashMap" resultType="com.project.model.PreferenceDTO">
+		select * from sp_preference where mem_no_fk = #{mem_no} and lec_no_fk = #{lec_no}
+	</select>
+	
+	
+	<!-- 210126 이호철 추가 -->
+	<select id="like_number" parameterType="int" resultType="int">
+		select count(*) from sp_preference where pref_like = 1 and lec_no_fk= #{lec_no}
+	</select>
+	<!-- 210129 박지원 추가 -->
+	<select id="dislike_number" parameterType="int" resultType="int">
+		select count(*) from sp_preference where pref_dislike = 1 and lec_no_fk= #{lec_no}
+	</select>
+	
+	<!-- WishList -->
+	<insert id="insertWishList" parameterType="java.util.HashMap">
+		insert into sp_wishlist values(sp_wish_seq.nextval, #{mem_no}, #{lec_no})
+	</insert>
+	<delete id="deleteWishList" parameterType="java.util.HashMap">
+		delete from sp_wishlist where mem_no_fk = #{mem_no} and lec_no_fk = #{lec_no}
+	</delete>
+	
+	<select id="wishCheck" parameterType="java.util.HashMap" resultType="int">
+		select Count(*) from sp_wishlist where mem_no_fk = #{mem_no} and lec_no_fk = #{lec_no}
+	</select>
+	
+</mapper>
